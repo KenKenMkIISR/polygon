@@ -18,8 +18,8 @@ FOR I=0 TO 63
 NEXT
 
 REM Read data
-A#=0:B#=0:C#=0
-USEGRAPHIC
+A#=0.3:C#=0.2
+USEGRAPHIC 9
 DIM P#(30),Q#(30)
 RESTORE DATA1
 N=0
@@ -32,7 +32,7 @@ WEND
 
 REM Main loop
 DO
- CLS
+ GCLS
  GOSUB DRAW
  WAIT 60
 
@@ -96,7 +96,7 @@ LABEL DRAW
    X2#=GOSUB#(ROTATX,X#,Y#,C#)
    Y2#=GOSUB#(ROTATY,X#,Y#,C#)
 
-   REM Draw parallelogram
+   REM Draw quadrilateral (3D)
    REM (U1,V1,W1) (U2,V2,W2)
    REM (X1,Y1,Z1) (X2,Y2,Z2)
 
@@ -130,15 +130,18 @@ LABEL DRWPGN
  PX2#=ARGS#(4):PY2#=ARGS#(5):PZ2#=ARGS#(6)
  PX3#=ARGS#(7):PY3#=ARGS#(8):PZ3#=ARGS#(9)
  GOSUB NVECT,PX2#-PX1#,PY2#-PY1#,PZ2#-PZ1#,PX3#-PX1#,PY3#-PY1#,PZ3#-PZ1#
+ IF ARGS(10)<0 THEN
+  NX#=-NX#:NY#=-NY#:NZ#=-NZ#
+ ENDIF
  S#=NX#*LX#+NY#*LY#+NZ#*LZ#
- IF S#<0 THEN S#=-S#
+ IF NZ#<0 THEN S#=-S#
 
  REM For debug
  IF S#>1.0 THEN PRINT "ERROR:";S#:END
 
  REM Calculate brightness
- C=INT(S#*85)-22:IF C<0 THEN C=0
- IF INT(NZ#<0) AND ARGS(10)>0 OR INT(NZ#>0) AND ARGS(10)<0 THEN
+ C=INT(S#*63):IF C<0 THEN C=0
+ IF NZ#<=0 THEN
   REM Front surface
   C=C+128
  ELSE
