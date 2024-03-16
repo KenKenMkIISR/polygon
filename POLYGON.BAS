@@ -12,7 +12,7 @@ D=17
 
 REM Set color palette
 FOR I=0 TO 63
- B=I*192/64+64
+ B=I*156/64+100
  PALETTE I+128,B,0,0:REM Front surface
  PALETTE I+192,B,B,B:REM Back surface
 NEXT
@@ -37,11 +37,14 @@ DO
  WAIT 60
 
  REM Update rotation angle on X,Z axis
- K=KEYS()
- IF K AND 1 THEN A#=A#-0.1
- IF K AND 2 THEN A#=A#+0.1
- IF K AND 4 THEN C#=C#-0.1
- IF K AND 8 THEN C#=C#+0.1
+ DO
+  K=KEYS()
+  IF K AND 1 THEN A#=A#-0.1
+  IF K AND 2 THEN A#=A#+0.1
+  IF K AND 4 THEN C#=C#-0.1
+  IF K AND 8 THEN C#=C#+0.1
+  WAIT 1
+ LOOP UNTIL K AND 15
 LOOP
 
 LABEL DRAW
@@ -75,7 +78,7 @@ LABEL DRAW
   U2#=GOSUB#(ROTATX,U#,V#,C#)
   V2#=GOSUB#(ROTATY,U#,V#,C#)
 
-  FOR J=1 TO D
+  FOR J=1 TO D*2
    F#=FLOAT#(J)/FLOAT#(D)*2*PI#
 
    X1#=P#(I)*COS#(F#)
@@ -100,8 +103,8 @@ LABEL DRAW
    REM (U1,V1,W1) (U2,V2,W2)
    REM (X1,Y1,Z1) (X2,Y2,Z2)
 
-   GOSUB DRWPGN,U1#,V1#,W1#,U2#,V2#,W2#,X2#,Y2#,Z2#,K
-   GOSUB DRWPGN,U1#,V1#,W1#,X2#,Y2#,Z2#,X1#,Y1#,Z1#,K
+   GOSUB DRWPGN,U1#,V1#,W1#,U2#,V2#,W2#,X2#,Y2#,Z2#,K,J<=D
+   GOSUB DRWPGN,U1#,V1#,W1#,X2#,Y2#,Z2#,X1#,Y1#,Z1#,K,J<=D
 
    U1#=X1#:V1#=Y1#:W1#=Z1#
    U2#=X2#:V2#=Y2#:W2#=Z2#
@@ -133,11 +136,17 @@ LABEL DRWPGN
  IF ARGS(10)<0 THEN
   NX#=-NX#:NY#=-NY#:NZ#=-NZ#
  ENDIF
+
+ REM First round draw back surface
+ REM Second round front surface
+ IF ARGS(11) THEN
+  IF NZ#<0 THEN RETURN
+ ELSE
+  IF NZ#>0 THEN RETURN
+ ENDIF
+
  S#=NX#*LX#+NY#*LY#+NZ#*LZ#
  IF NZ#<0 THEN S#=-S#
-
- REM For debug
- IF S#>1.0 THEN PRINT "ERROR:";S#:END
 
  REM Calculate brightness
  C=INT(S#*63):IF C<0 THEN C=0
