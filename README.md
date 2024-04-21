@@ -3,5 +3,8 @@
 MachiKania type Pの上下左右ボタンでX軸、Z軸回転させることができます。  
 冒頭の変数Dを変更することで、回転方向の分割数を変更することができます。  
 このプログラムはMachiKania type Mでもそのまま動作します。  
-![](polygon2.jpg) 
-![](polygon1.jpg) 
+![](polygon2.jpg)  
+![](polygon1.jpg)  
+  
+流れる水面の波紋を表現しました。（WAVEGON2.BAS）  
+![](polygonwave.jpg)  
